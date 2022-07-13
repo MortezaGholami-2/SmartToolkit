@@ -1,36 +1,51 @@
-﻿namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
+﻿using System.Diagnostics;
+using System.Reflection;
+
+namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
 {
     /// <summary>
     /// Represents a simple menu for Console apps.
     /// </summary>
     public class SimpleConsoleMenu
     {
-        private Dictionary<string, Action> _menuItems;
+
+        private static Assembly Application { get; } = Assembly.GetExecutingAssembly();
+        //private static FileVersionInfo 
+        //public static string? GetApplicationVersion()
+        //{
+        //    return FileVersionInfo.GetVersionInfo(Application.Location).FileVersion;
+        //}
+
+        private readonly Dictionary<string, Action> MenuItems;
+        
         /// <summary>
         /// hgjjh
         /// </summary>
         /// <param name="menuItems">gjhgjh</param>
-        public SimpleConsoleMenu(Dictionary<string, Action> menuItems)
+        public SimpleConsoleMenu(Assembly application, Dictionary<string, Action> menuItems)
         {
-            _menuItems = menuItems;
+            application = Assembly.GetExecutingAssembly();
+            MenuItems = menuItems;
+
         }
 
         public void ShowMenu()
         {
             // Application Name
-            //System.Console.WriteLine($"{ApplicationService.Application.GetName()}");
+            Console.WriteLine($"{Application.FullName}");
 
             // Application Author
+            Console.WriteLine($"{FileVersionInfo.GetVersionInfo(Application.Location).ProductName}");
 
             // Application Version
-            //System.Console.WriteLine("Written By dsdfsdfds");
+            Console.WriteLine($"{ FileVersionInfo.GetVersionInfo(Application.Location).FileVersion }");
 
             // Draw Menu Items
-            for (int i = 1; i < _menuItems.Count; i++)
+            for (int i = 1; i < MenuItems.Count; i++)
             {
-                System.Console.WriteLine($"{i}. {_menuItems.Keys.ElementAt(i)}");
+                System.Console.WriteLine($"{i}. {MenuItems.Keys.ElementAt(i)}");
             }
-            System.Console.WriteLine($"0. {_menuItems.Keys.ElementAt(0)}");
+            System.Console.WriteLine($"0. {MenuItems.Keys.ElementAt(0)}");
 
             // Select Menu Item
             string? selectedMenuItem = null;
@@ -43,13 +58,13 @@
                     {
                         i = j;
                     }
-                } while (i < 0 || i >= _menuItems.Count);
+                } while (i < 0 || i >= MenuItems.Count);
 
-                selectedMenuItem = _menuItems.Keys.ElementAt((Index)i);
+                selectedMenuItem = MenuItems.Keys.ElementAt((Index)i);
 
-                System.Console.WriteLine("You Selected: " + _menuItems.Keys.ElementAt((Index)i));
+                System.Console.WriteLine("You Selected: " + MenuItems.Keys.ElementAt((Index)i));
 
-                Action action = _menuItems.Values.ElementAt((Index)i) as Action;
+                Action action = MenuItems.Values.ElementAt((Index)i) as Action;
                 action();
             }
         }
