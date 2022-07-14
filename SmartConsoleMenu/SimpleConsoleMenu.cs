@@ -9,7 +9,7 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
     public class SimpleConsoleMenu
     {
 
-        private static Assembly Application { get; } = Assembly.GetExecutingAssembly();
+        private static Assembly Application;
         //private static FileVersionInfo 
         //public static string? GetApplicationVersion()
         //{
@@ -24,7 +24,7 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
         /// <param name="menuItems">gjhgjh</param>
         public SimpleConsoleMenu(Assembly application, Dictionary<string, Action> menuItems)
         {
-            application = Assembly.GetExecutingAssembly();
+            Application = application;
             MenuItems = menuItems;
 
         }
