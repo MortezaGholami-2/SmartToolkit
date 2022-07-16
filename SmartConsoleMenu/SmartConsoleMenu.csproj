@@ -7,4 +7,18 @@
     <RootNamespace>SmartAppSoftware.SmartToolkit.SmartConsoleMenu</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="starwars.flf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="starwars.flf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Spectre.Console" Version="0.44.0" />
+  </ItemGroup>
+
 </Project>

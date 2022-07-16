@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using SmartAppSoftware.SmartToolkit.SmartConsoleMenu.Models;
+using Spectre.Console;
 
 namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
 {
@@ -9,28 +11,48 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
     public class SimpleConsoleMenu
     {
 
-        private static Assembly Application;
+        private static Assembly? Application;
         //private static FileVersionInfo 
         //public static string? GetApplicationVersion()
         //{
         //    return FileVersionInfo.GetVersionInfo(Application.Location).FileVersion;
         //}
 
-        private readonly Dictionary<string, Action> MenuItems;
+        private readonly Dictionary<Key, Action?> MenuItems;
         
         /// <summary>
         /// hgjjh
         /// </summary>
         /// <param name="menuItems">gjhgjh</param>
-        public SimpleConsoleMenu(Assembly application, Dictionary<string, Action> menuItems)
+        public SimpleConsoleMenu(Assembly application, Dictionary<Key, Action?> menuItems)
         {
             Application = application;
             MenuItems = menuItems;
-
         }
 
         public void ShowMenu()
         {
+
+            //var font = FigletFont.Load(".\\starwars.flf");
+            //AnsiConsole.Write(
+            //    new FigletText(font, "Stash")
+            //    .Centered()
+            //    .Color(Color.Green));
+            //AnsiConsole.Write(
+            //    new FigletText(font, "Companion")
+            //    .Centered()
+            //    .Color(Color.Green));
+
+
+            //var panel = new Panel("[bold red]Stash Companion v1.0 Developed by: Me![/]");
+            //panel.Border = BoxBorder.Heavy;
+            //AnsiConsole.Write(panel);
+
+
+            //Rule rule=new Rule("[red]Main Menu[/]");
+            //rule.LeftAligned();
+            //AnsiConsole.Write(rule);
+
             // Application Name
             Console.WriteLine($"{Application.FullName}");
 
@@ -38,34 +60,48 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
             Console.WriteLine($"{FileVersionInfo.GetVersionInfo(Application.Location).ProductName}");
 
             // Application Version
-            Console.WriteLine($"{ FileVersionInfo.GetVersionInfo(Application.Location).FileVersion }");
+            Console.WriteLine($"{FileVersionInfo.GetVersionInfo(Application.Location).FileVersion}");
 
             // Draw Menu Items
-            for (int i = 1; i < MenuItems.Count; i++)
-            {
-                System.Console.WriteLine($"{i}. {MenuItems.Keys.ElementAt(i)}");
-            }
-            System.Console.WriteLine($"0. {MenuItems.Keys.ElementAt(0)}");
-
-            // Select Menu Item
             string? selectedMenuItem = null;
+            string? parent = null;
+
             while (selectedMenuItem != "Exit")
             {
-                int? i = null;
-                do
+                List<string> items = new();
+
+                foreach (var item in MenuItems)
                 {
-                    if (int.TryParse(System.Console.ReadLine(), out int j))
+                    if (item.Key.ParentMenuItemName == parent)
                     {
-                        i = j;
+                        items.Add(item.Key.ChildMenuItemName);
                     }
-                } while (i < 0 || i >= MenuItems.Count);
+                }
 
-                selectedMenuItem = MenuItems.Keys.ElementAt((Index)i);
+                selectedMenuItem = AnsiConsole.Prompt(new SelectionPrompt<string>()
+                    .Title("What's your [green]favorite fruit[/]?")
+                    .PageSize(10)
+                    .MoreChoicesText("[grey](Move up and down to reveal more fruits)[/]")
+                    .AddChoices(items));
 
-                System.Console.WriteLine("You Selected: " + MenuItems.Keys.ElementAt((Index)i));
+                if(selectedMenuItem=="Back to Main Menu")
+                {
+                    parent = null;
+                }
+                else
+                {
+                    AnsiConsole.Write("You Selected: " + selectedMenuItem);
 
-                Action action = MenuItems.Values.ElementAt((Index)i) as Action;
-                action();
+                    Action? action = MenuItems.FirstOrDefault(x => x.Key.ChildMenuItemName == selectedMenuItem).Value;
+                    if (action != null)
+                    {
+                        action();
+                    }
+                    else
+                    {
+                        parent = items.FirstOrDefault(selectedMenuItem);
+                    }
+                }
             }
         }
     }
