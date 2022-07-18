@@ -64,6 +64,7 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
 
             // Draw Menu Items
             string? selectedMenuItem = null;
+            string? grandParent = null;
             string? parent = null;
 
             while (selectedMenuItem != "Exit")
@@ -84,7 +85,10 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
                     .MoreChoicesText("[grey](Move up and down to reveal more fruits)[/]")
                     .AddChoices(items));
 
-                if(selectedMenuItem=="Back to Main Menu")
+                grandParent = parent;
+                parent = selectedMenuItem;
+
+                if (selectedMenuItem == "Back")
                 {
                     parent = null;
                 }
@@ -93,13 +97,16 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
                     AnsiConsole.Write("You Selected: " + selectedMenuItem);
 
                     Action? action = MenuItems.FirstOrDefault(x => x.Key.ChildMenuItemName == selectedMenuItem).Value;
-                    if (action != null)
+                    if (action == null)
                     {
-                        action();
+                        //parent = items.FirstOrDefault(selectedMenuItem);
                     }
                     else
                     {
-                        parent = items.FirstOrDefault(selectedMenuItem);
+                        action();
+                        AnsiConsole.Write("select a key to go back...");
+                        Console.ReadKey();
+                        AnsiConsole.Clear();
                     }
                 }
             }
