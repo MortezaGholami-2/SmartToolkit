@@ -78,6 +78,9 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
                         items.Add(item.Key.ChildMenuItemName);
                     }
                 }
+                
+                // TODO: dsfsdfs
+                // TODO: gfhgfhg
 
                 selectedMenuItem = AnsiConsole.Prompt(new SelectionPrompt<string>()
                     .Title("What's your [green]favorite fruit[/]?")
@@ -85,12 +88,9 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
                     .MoreChoicesText("[grey](Move up and down to reveal more fruits)[/]")
                     .AddChoices(items));
 
-                grandParent = parent;
-                parent = selectedMenuItem;
-
                 if (selectedMenuItem == "Back")
                 {
-                    parent = null;
+                    parent = grandParent;
                 }
                 else
                 {
@@ -100,10 +100,13 @@ namespace SmartAppSoftware.SmartToolkit.SmartConsoleMenu
                     if (action == null)
                     {
                         //parent = items.FirstOrDefault(selectedMenuItem);
+                        grandParent = parent;
+                        parent = selectedMenuItem;
                     }
                     else
                     {
                         action();
+                        AnsiConsole.WriteLine();
                         AnsiConsole.Write("select a key to go back...");
                         Console.ReadKey();
                         AnsiConsole.Clear();
